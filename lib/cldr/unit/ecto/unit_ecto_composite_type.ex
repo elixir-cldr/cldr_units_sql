@@ -2,7 +2,7 @@ if Code.ensure_loaded?(Ecto.Type) do
   defmodule Cldr.Unit.Ecto.Composite.Type do
     @moduledoc """
     Implements the Ecto.Type behaviour for a user-defined Postgres composite type
-    called `:money_with_currency`.
+    called `:cldr_unit`.
 
     This is the preferred option for Postgres database since the serialized unit
     value is stored as a decimal number,

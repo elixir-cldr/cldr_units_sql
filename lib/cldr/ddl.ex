@@ -1,7 +1,7 @@
-defmodule Money.DDL do
+defmodule Cldr.Unit.DDL do
   @moduledoc """
   Functions to return SQL DDL commands that support the
-  creation and deletion of the `money_with_currency` database
+  creation and deletion of the `cldr_unit` database
   type and associated aggregate functions.
   """
 

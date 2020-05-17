@@ -1,7 +1,7 @@
 if Code.ensure_loaded?(Ecto.Type) do
   defmodule Cldr.Unit.Ecto.Map.Type do
     @moduledoc """
-    Implements Ecto.Type behaviour for Money, where the underlying schema type
+    Implements Ecto.Type behaviour for `Cldr.Unit`, where the underlying schema type
     is a map.
 
     This is the required option for databases such as MySQL that do not support

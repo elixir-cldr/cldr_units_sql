@@ -11,7 +11,7 @@ if Code.ensure_loaded?(Ecto) do
 
     @moduledoc """
     Generates a migration to add a aggregation functions
-    to Postgres for the `money_with_currency` type
+    to Postgres for the `:cldr_unit` type
 
     This release includes only the `sum` aggregattion
     function.
@@ -59,11 +59,11 @@ if Code.ensure_loaded?(Ecto) do
       use Ecto.Migration
 
       def up do
-        <%= Money.DDL.execute_each(Money.DDL.define_aggregate_functions) %>
+        <%= Cldr.Unit.DDL.execute_each(Cldr.Unit.DDL.define_aggregate_functions) %>
       end
 
       def down do
-        <%= Money.DDL.execute_each(Money.DDL.drop_aggregate_functions) %>
+        <%= Cldr.Unit.DDL.execute_each(Cldr.Unit.DDL.drop_aggregate_functions) %>
       end
     end
     """)

@@ -11,10 +11,10 @@ if Code.ensure_loaded?(Ecto) do
                 "database type for Postgres"
 
     @moduledoc """
-    Generates a migration to add a composite type called `:money_with_currency`
+    Generates a migration to add a composite type called `:cldr_unit`
     to a Postgres database.
 
-    The `:money_with_currency` type created is a composite type and
+    The `:cldr_unit` type created is a composite type and
     therefore may not be supported in other databases.
     """
 
@@ -60,11 +60,11 @@ if Code.ensure_loaded?(Ecto) do
       use Ecto.Migration
 
       def up do
-        <%= Money.DDL.execute(Money.DDL.create_cldr_unit) %>
+        <%= Cldr.Unit.DDL.execute(Cldr.Unit.DDL.create_cldr_unit) %>
       end
 
       def down do
-        <%= Money.DDL.execute(Money.DDL.drop_cldr_unit) %>
+        <%= Cldr.Unit.DDL.execute(Cldr.Unit.DDL.drop_cldr_unit) %>
       end
     end
     """)
