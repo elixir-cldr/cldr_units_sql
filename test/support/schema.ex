@@ -1,11 +1,10 @@
-defmodule Organization do
+defmodule Product do
   use Ecto.Schema
 
   @primary_key false
-  schema "organizations" do
-    field :payroll, Money.Ecto.Composite.Type
-    field :name,            :string
-    field :employee_count,  :integer
+  schema "products" do
+    field :weight, Cldr.Unit.Ecto.Composite.Type
+    field :name,   :string
     timestamps()
   end
 end

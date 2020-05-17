@@ -1,11 +1,10 @@
-defmodule Money.Repo.Migrations.CreateMoneyTable do
+defmodule Cldr.Unit.Repo.Migrations.CreateProductTable do
   use Ecto.Migration
 
   def change do
-    create table(:organizations) do
+    create table(:products) do
       add :name,            :string
-      add :employee_count,  :integer
-      add :payroll,         :money_with_currency
+      add :weight,         :cldr_unit
       timestamps()
     end
   end

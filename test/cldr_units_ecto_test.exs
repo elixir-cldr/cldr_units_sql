@@ -1,122 +1,103 @@
-defmodule Money.Ecto.Test do
+defmodule Cldr.Unit.Ecto.Test do
   use ExUnit.Case
 
-  describe "Money.Ecto.Composite.Type specific tests" do
-    test "load a tuple with an unknown currency code produces an error" do
-      assert Money.Ecto.Composite.Type.load({"ABC", 100}) == :error
+  describe "Cldr.Unit.Ecto.Composite.Type specific tests" do
+    test "load a tuple with an unknown unit produces an error" do
+      assert Cldr.Unit.Ecto.Composite.Type.load({"ABC", 100}) == :error
     end
 
-    test "load a tuple produces a Money struct" do
-      assert Money.Ecto.Composite.Type.load({"USD", 100}) == {:ok, Money.new(:USD, 100)}
-    end
-
-    test "dump a money struct" do
-      assert Money.Ecto.Composite.Type.dump(Money.new(:USD, 100)) ==
-               {:ok, {"USD", Decimal.new(100)}}
-    end
-  end
-
-  describe "Money.Ecto.Map.Type specific tests" do
-    test "load a json map with a string amount produces a Money struct" do
-      assert Money.Ecto.Map.Type.load(%{"currency" => "USD", "amount" => "100"}) ==
-               {:ok, Money.new(:USD, 100)}
-    end
-
-    test "load a json map with a number amount produces a Money struct" do
-      assert Money.Ecto.Map.Type.load(%{"currency" => "USD", "amount" => 100}) ==
-               {:ok, Money.new(:USD, 100)}
-    end
-
-    test "load a json map with an unknown currency code produces an error" do
-      assert Money.Ecto.Map.Type.load(%{"currency" => "AAA", "amount" => 100}) == :error
+    test "load a tuple produces a Cldr.Unit struct" do
+      assert Cldr.Unit.Ecto.Composite.Type.load({"meter", 100}) == {:ok, Cldr.Unit.new!(:meter, 100)}
     end
 
     test "dump a money struct" do
-      assert Money.Ecto.Map.Type.dump(Money.new(:USD, 100)) ==
-               {:ok, %{"amount" => "100", "currency" => "USD"}}
+      assert Cldr.Unit.Ecto.Composite.Type.dump(Cldr.Unit.new!(:meter, 100)) ==
+               {:ok, {"meter", 100}}
     end
   end
 
-  for ecto_type_module <- [Money.Ecto.Composite.Type, Money.Ecto.Map.Type] do
-    test "#{inspect(ecto_type_module)}: dump anything other than a Money struct or a 2-tuple is an error" do
+  describe "Cldr.Unit.Ecto.Map.Type specific tests" do
+    test "load a json map with a string value produces a Cldr.Unit struct" do
+      assert Cldr.Unit.Ecto.Map.Type.load(%{"unit" => "meter", "value" => "100"}) ==
+               {:ok, Cldr.Unit.new!(:meter, Decimal.new(100))}
+    end
+
+    test "load a json map with a number value produces a Cldr.Unit struct" do
+      assert Cldr.Unit.Ecto.Map.Type.load(%{"unit" => "meter", "value" => 100}) ==
+               {:ok, Cldr.Unit.new!(:meter, 100)}
+    end
+
+    test "load a json map with an unknown unit code produces an error" do
+      assert Cldr.Unit.Ecto.Map.Type.load(%{"unit" => "AAA", "value" => 100}) == :error
+    end
+
+    test "dump a money struct" do
+      assert Cldr.Unit.Ecto.Map.Type.dump(Cldr.Unit.new!(:meter, 100)) ==
+               {:ok, %{"value" => "100", "unit" => "meter"}}
+    end
+  end
+
+  for ecto_type_module <- [Cldr.Unit.Ecto.Composite.Type, Cldr.Unit.Ecto.Map.Type] do
+    test "#{inspect(ecto_type_module)}: dump anything other than a Cldr.Unit struct or a 2-tuple is an error" do
       assert unquote(ecto_type_module).dump(100) == :error
     end
 
-    test "#{inspect(ecto_type_module)}: cast a map with the current structure but an empty amount" do
-      assert unquote(ecto_type_module).cast(%{"currency" => "USD", "amount" => ""}) == {:ok, nil}
+    test "#{inspect(ecto_type_module)}: cast a map with the current structure but an empty value" do
+      assert unquote(ecto_type_module).cast(%{"unit" => "meter", "value" => ""}) == {:ok, nil}
     end
 
     test "#{inspect(ecto_type_module)}: cast a money struct" do
-      assert unquote(ecto_type_module).cast(Money.new(:USD, 100)) == {:ok, Money.new(:USD, 100)}
+      assert unquote(ecto_type_module).cast(Cldr.Unit.new!(:meter, 100)) == {:ok, Cldr.Unit.new!(:meter, 100)}
     end
 
     test "#{inspect(ecto_type_module)}: cast a map with string keys and values" do
-      assert unquote(ecto_type_module).cast(%{"currency" => "USD", "amount" => "100"}) ==
-               {:ok, Money.new(:USD, 100)}
+      assert unquote(ecto_type_module).cast(%{"unit" => "meter", "value" => "100"}) ==
+               {:ok, Cldr.Unit.new!(:meter, Decimal.new(100))}
     end
 
-    test "#{inspect(ecto_type_module)}: cast a map with string keys and numeric amount" do
-      assert unquote(ecto_type_module).cast(%{"currency" => "USD", "amount" => 100}) ==
-               {:ok, Money.new(:USD, 100)}
+    test "#{inspect(ecto_type_module)}: cast a map with string keys and numeric value" do
+      assert unquote(ecto_type_module).cast(%{"unit" => "meter", "value" => 100}) ==
+               {:ok, Cldr.Unit.new!(:meter, Decimal.new(100))}
     end
 
-    test "#{inspect(ecto_type_module)}: cast a map with string keys, atom currency, and string amount" do
-      assert unquote(ecto_type_module).cast(%{"currency" => :USD, "amount" => "100"}) ==
-               {:ok, Money.new(100, :USD)}
+    test "#{inspect(ecto_type_module)}: cast a map with string keys, atom unit, and string value" do
+      assert unquote(ecto_type_module).cast(%{"unit" => :meter, "value" => "100"}) ==
+               {:ok, Cldr.Unit.new!(Decimal.new(100), :meter)}
     end
 
-    test "#{inspect(ecto_type_module)}: cast a map with string keys, atom currency, and numeric amount" do
-      assert unquote(ecto_type_module).cast(%{"currency" => :USD, "amount" => 100}) ==
-               {:ok, Money.new(100, :USD)}
+    test "#{inspect(ecto_type_module)}: cast a map with string keys, atom unit, and numeric value" do
+      assert unquote(ecto_type_module).cast(%{"unit" => :meter, "value" => 100}) ==
+               {:ok, Cldr.Unit.new!(Decimal.new(100), :meter)}
     end
 
-    test "#{inspect(ecto_type_module)}: cast a map with string keys and invalid currency" do
-      assert unquote(ecto_type_module).cast(%{"currency" => "AAA", "amount" => 100}) ==
-               {:error, message: "The currency \"AAA\" is invalid"}
+    test "#{inspect(ecto_type_module)}: cast a map with string keys and invalid unit" do
+      assert unquote(ecto_type_module).cast(%{"unit" => "AAA", "value" => 100}) ==
+               {:error, [message: "Unknown unit was detected at \"AAA\""]}
     end
 
     test "#{inspect(ecto_type_module)}: cast a map with atom keys and values" do
-      assert unquote(ecto_type_module).cast(%{currency: "USD", amount: "100"}) ==
-               {:ok, Money.new(100, :USD)}
+      assert unquote(ecto_type_module).cast(%{unit: "meter", value: "100"}) ==
+               {:ok, Cldr.Unit.new!(Decimal.new(100), :meter)}
     end
 
-    test "#{inspect(ecto_type_module)}: cast a map with atom keys and numeric amount" do
-      assert unquote(ecto_type_module).cast(%{currency: "USD", amount: 100}) ==
-               {:ok, Money.new(100, :USD)}
+    test "#{inspect(ecto_type_module)}: cast a map with atom keys and numeric value" do
+      assert unquote(ecto_type_module).cast(%{unit: "meter", value: 100}) ==
+               {:ok, Cldr.Unit.new!(Decimal.new(100), :meter)}
     end
 
-    test "#{inspect(ecto_type_module)}: cast a map with atom keys, atom currency, and numeric amount" do
-      assert unquote(ecto_type_module).cast(%{currency: :USD, amount: 100}) ==
-               {:ok, Money.new(100, :USD)}
+    test "#{inspect(ecto_type_module)}: cast a map with atom keys, atom unit, and numeric value" do
+      assert unquote(ecto_type_module).cast(%{unit: :meter, value: 100}) ==
+               {:ok, Cldr.Unit.new!(Decimal.new(100), :meter)}
     end
 
-    test "#{inspect(ecto_type_module)}: cast a map with atom keys, atom currency, and string amount" do
-      assert unquote(ecto_type_module).cast(%{currency: :USD, amount: "100"}) ==
-               {:ok, Money.new(100, :USD)}
+    test "#{inspect(ecto_type_module)}: cast a map with atom keys, atom unit, and string value" do
+      assert unquote(ecto_type_module).cast(%{unit: :meter, value: "100"}) ==
+               {:ok, Cldr.Unit.new!(Decimal.new(100), :meter)}
     end
 
-    test "#{inspect(ecto_type_module)}: cast a map with atom keys and invalid currency" do
-      assert unquote(ecto_type_module).cast(%{currency: "AAA", amount: 100}) ==
-               {:error, message: "The currency \"AAA\" is invalid"}
-    end
-
-    test "#{inspect(ecto_type_module)}: cast a string that includes currency code and amount" do
-      assert unquote(ecto_type_module).cast("100 USD") == {:ok, Money.new(100, :USD)}
-      assert unquote(ecto_type_module).cast("USD 100") == {:ok, Money.new(100, :USD)}
-    end
-
-    test "#{inspect(ecto_type_module)}: cast a string that includes currency code and localised amount" do
-      locale = Test.Cldr.get_locale
-      Test.Cldr.put_locale "de"
-      assert unquote(ecto_type_module).cast("100,00 USD") == {:ok, Money.new("100,00", :USD)}
-      Test.Cldr.put_locale locale
-    end
-
-    test "#{inspect(ecto_type_module)}: cast an invalid string is an error" do
-      assert unquote(ecto_type_module).cast("100 USD and other stuff") ==
-        {:error,  message: "The currency \"USD and other stuff\" is unknown or not supported"}
-      assert unquote(ecto_type_module).cast("100") ==
-        {:error, message: "A currency code, symbol or description must be specified but was not found in \"100\""}
+    test "#{inspect(ecto_type_module)}: cast a map with atom keys and invalid unit" do
+      assert unquote(ecto_type_module).cast(%{unit: "AAA", value: 100}) ==
+               {:error, [message: "Unknown unit was detected at \"AAA\""]}
     end
 
     test "#{inspect(ecto_type_module)}: cast anything else is an error" do

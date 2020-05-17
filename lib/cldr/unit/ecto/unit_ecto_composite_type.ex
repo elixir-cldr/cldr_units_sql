@@ -4,14 +4,14 @@ if Code.ensure_loaded?(Ecto.Type) do
     Implements the Ecto.Type behaviour for a user-defined Postgres composite type
     called `:money_with_currency`.
 
-    This is the preferred option for Postgres database since the serialized money
-    amount is stored as a decimal number,
+    This is the preferred option for Postgres database since the serialized unit
+    value is stored as a decimal number,
     """
 
     @behaviour Ecto.Type
 
     def type do
-      :unit
+      :cldr_unit
     end
 
     def blank?(_) do
@@ -19,8 +19,8 @@ if Code.ensure_loaded?(Ecto.Type) do
     end
 
     # When loading from the database
-    def load({unit_name, unit_amount}) do
-      with {:ok, unit} <- Cldr.Unit.new(unit_name, unit_amount) do
+    def load({unit_name, unit_value}) do
+      with {:ok, unit} <- Cldr.Unit.new(unit_name, unit_value) do
         {:ok, unit}
       else
         _ -> :error
@@ -28,10 +28,15 @@ if Code.ensure_loaded?(Ecto.Type) do
     end
 
     # Dumping to the database.  We make the assumption that
-    # since we are dumping from %Money{} structs that the
+    # since we are dumping from %Cldr.Unit{} structs that the
     # data is ok
+    def dump(%Cldr.Unit{value: %Ratio{} = value} = unit) do
+      value = Decimal.div(Decimal.new(value.numerator), Decimal.new(value.denominator))
+      {:ok, {to_string(unit.unit), value}}
+    end
+
     def dump(%Cldr.Unit{} = unit) do
-      {:ok, {unit.name, unit.value}}
+      {:ok, {to_string(unit.unit), unit.value}}
     end
 
     def dump(_) do
@@ -43,42 +48,42 @@ if Code.ensure_loaded?(Ecto.Type) do
       {:ok, unit}
     end
 
-    def cast(%{"unit" => _, "amount" => ""}) do
+    def cast(%{"unit" => _, "value" => ""}) do
       {:ok, nil}
     end
 
-    def cast(%{"unit" => unit_name, "amount" => amount})
-        when (is_binary(unit_name) or is_atom(unit_name)) and is_number(amount) do
-      with decimal_amount <- Decimal.new(amount),
-           {:ok, unit} <- Cldr.Unit.new(unit_name, decimal_amount) do
+    def cast(%{"unit" => unit_name, "value" => value})
+        when (is_binary(unit_name) or is_atom(unit_name)) and is_number(value) do
+      with decimal_value <- Decimal.new(value),
+           {:ok, unit} <- Cldr.Unit.new(unit_name, decimal_value) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
       end
     end
 
-    def cast(%{"unit" => unit_name, "amount" => amount})
-        when (is_binary(unit_name) or is_atom(unit_name)) and is_binary(amount) do
-      with {:ok, amount} <- Decimal.parse(amount),
-           {:ok, unit} <- Cldr.Unit.new(unit_name, amount) do
+    def cast(%{"unit" => unit_name, "value" => value})
+        when (is_binary(unit_name) or is_atom(unit_name)) and is_binary(value) do
+      with {:ok, value} <- Decimal.parse(value),
+           {:ok, unit} <- Cldr.Unit.new(unit_name, value) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
-        :error -> {:error, message: "Couldn't parse amount #{inspect amount}"}
+        :error -> {:error, message: "Couldn't parse value #{inspect value}"}
       end
     end
 
-    def cast(%{"unit" => unit_name, "amount" => %Decimal{} = amount})
+    def cast(%{"unit" => unit_name, "value" => %Decimal{} = value})
         when is_binary(unit_name) or is_atom(unit_name) do
-      with {:ok, unit} <- Cldr.Unit.new(unit_name, amount) do
+      with {:ok, unit} <- Cldr.Unit.new(unit_name, value) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
       end
     end
 
-    def cast(%{unit: unit_name, amount: amount}) do
-      cast(%{"unit" => unit_name, "amount" => amount})
+    def cast(%{unit: unit_name, value: value}) do
+      cast(%{"unit" => unit_name, "value" => value})
     end
 
     def cast(_money) do

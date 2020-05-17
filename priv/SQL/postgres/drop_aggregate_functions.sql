@@ -1,4 +1,4 @@
-DROP AGGREGATE IF EXISTS sum(unit);
+DROP AGGREGATE IF EXISTS sum(cldr_unit);
 
 
 DROP FUNCTION IF EXISTS unit_state_function(agg_state cldr_unit, unit cldr_unit);

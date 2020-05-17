@@ -1,70 +1,70 @@
-defmodule Money.DB.Test do
-  use Money.SQL.RepoCase
+defmodule Cldr.Unit.DB.Test do
+  use Cldr.Unit.SQL.RepoCase
 
-  test "insert a record with a money amount" do
-    m = Money.new(:USD, 100)
-    Repo.insert(%Organization{payroll: m})
-    assert {:ok, struct} = Repo.insert(%Organization{payroll: m})
-    assert Money.compare(m, struct.payroll) == :eq
+  test "insert a record with a unit value" do
+    m = Cldr.Unit.new!(:meter, 100)
+    Repo.insert(%Product{weight: m})
+    assert {:ok, struct} = Repo.insert(%Product{weight: m})
+    assert Cldr.Unit.compare(m, struct.weight) == :eq
   end
 
-  test "select aggregate function sum on a :money_with_currency type" do
-    m = Money.new(:USD, 100)
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    sum = select(Organization, [o], type(sum(o.payroll), o.payroll)) |> Repo.one
-    assert Money.compare(sum, Money.new(:USD, 300)) == :eq
+  test "select aggregate function sum on a :cldr_unit type" do
+    m = Cldr.Unit.new!(:meter, 100)
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    sum = select(Product, [o], type(sum(o.weight), o.weight)) |> Repo.one
+    assert Cldr.Unit.compare(sum, Cldr.Unit.new!(:meter, Decimal.new(300))) == :eq
   end
 
-  test "Repo.aggregate function sum on a :money_with_currency type" do
-    m = Money.new(:USD, 100)
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    sum = Repo.aggregate(Organization, :sum, :payroll)
-    assert Money.compare(sum, Money.new(:USD, 300)) == :eq
+  test "Repo.aggregate function sum on a :cldr_unit type" do
+    m = Cldr.Unit.new!(:meter, 100)
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    sum = Repo.aggregate(Product, :sum, :weight)
+    assert Cldr.Unit.compare(sum, Cldr.Unit.new!(:meter, Decimal.new(300))) == :eq
   end
 
-  test "Exception is raised if trying to sum different currencies" do
-    m = Money.new(:USD, 100)
-    m2 = Money.new(:AUD, 100)
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: m2})
+  test "Exception is raised if trying to sum different units" do
+    m = Cldr.Unit.new!(:meter, 100)
+    m2 = Cldr.Unit.new!(:foot, 100)
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: m2})
     assert_raise Postgrex.Error, fn ->
-      Repo.aggregate(Organization, :sum, :payroll)
+      Repo.aggregate(Product, :sum, :weight)
     end
   end
 
-  test "select distinct aggregate function sum on a :money_with_currency type" do
-    m = Money.new(:USD, 100)
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: Money.new(:USD, 200)})
+  test "select distinct aggregate function sum on a :cldr_unit type" do
+    m = Cldr.Unit.new!(:meter, 100)
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: Cldr.Unit.new!(:meter, 200)})
 
-    query = select(Organization, [o], type(fragment("SUM(DISTINCT ?)", o.payroll), o.payroll))
+    query = select(Product, [o], type(fragment("SUM(DISTINCT ?)", o.weight), o.weight))
     sum = query |> Repo.one
-    assert Money.compare(sum, Money.new(:USD, 300)) == :eq
+    assert Cldr.Unit.compare(sum, Cldr.Unit.new!(:meter, Decimal.new(300))) == :eq
   end
 
   test "filter on a currency type" do
-    m = Money.new(:USD, 100)
-    m2 = Money.new(:AUD, 200)
+    m = Cldr.Unit.new!(:meter, 100)
+    m2 = Cldr.Unit.new!(:foot, 200)
 
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: m2})
-    {:ok, _} = Repo.insert(%Organization{payroll: m})
-    {:ok, _} = Repo.insert(%Organization{payroll: m2})
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: m2})
+    {:ok, _} = Repo.insert(%Product{weight: m})
+    {:ok, _} = Repo.insert(%Product{weight: m2})
 
-    query = from o in Organization,
-              where: fragment("currency_code(payroll)") == "USD",
-              select: sum(o.payroll)
+    query = from o in Product,
+              where: fragment("unit(weight)") == "meter",
+              select: sum(o.weight)
 
     result = query |> Repo.one
 
-    assert result == Money.new(:USD, 200)
+    assert result == Cldr.Unit.new!(:meter, Decimal.new(200))
   end
 
 end

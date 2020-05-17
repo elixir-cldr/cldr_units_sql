@@ -1,5 +1,5 @@
 if Code.ensure_loaded?(Ecto.Type) do
-  defmodule Cldr.Ecto.Map.Type do
+  defmodule Cldr.Unit.Ecto.Map.Type do
     @moduledoc """
     Implements Ecto.Type behaviour for Money, where the underlying schema type
     is a map.
@@ -7,7 +7,7 @@ if Code.ensure_loaded?(Ecto.Type) do
     This is the required option for databases such as MySQL that do not support
     composite types.
 
-    In order to preserve precision, the amount is serialized as a string since the
+    In order to preserve precision, the value is serialized as a string since the
     JSON representation of a numeric value is either an integer or a float.
 
     `Decimal.to_string/1` is not guaranteed to produce a string that will round-trip
@@ -28,25 +28,25 @@ if Code.ensure_loaded?(Ecto.Type) do
       :map
     end
 
-    def load(%{"unit" => unit_name, "amount" => amount}) when is_binary(amount) do
-      with {:ok, amount} <- Decimal.parse(amount),
-           {:ok, unit} <- Cldr.Unit.new(unit_name, amount) do
+    def load(%{"unit" => unit_name, "value" => value}) when is_binary(value) do
+      with {:ok, value} <- Decimal.parse(value),
+           {:ok, unit} <- Cldr.Unit.new(unit_name, value) do
         {:ok, unit}
       else
         _ -> :error
       end
     end
 
-    def load(%{"unit" => unit_name, "amount" => amount}) when is_integer(amount) do
-      with {:ok, unit} <- Cldr.Unit.new(unit_name, amount) do
+    def load(%{"unit" => unit_name, "value" => value}) when is_integer(value) do
+      with {:ok, unit} <- Cldr.Unit.new(unit_name, value) do
         {:ok, unit}
       else
         _ -> :error
       end
     end
 
-    def dump(%Cldr.Unit{unit: unit_name, value: %Decimal{} = amount}) do
-      {:ok, %{"unit" => unit_name, "amount" => Decimal.to_string(amount)}}
+    def dump(%Cldr.Unit{unit: unit_name, value: value}) do
+      {:ok, %{"unit" => to_string(unit_name), "value" => to_string(value)}}
     end
 
     def dump(_) do
