@@ -1,4 +1,4 @@
-DROP AGGREGATE IF EXISTS sum(money_with_currency);
+DROP AGGREGATE IF EXISTS sum(unit);
 
 
-DROP FUNCTION IF EXISTS money_state_function(agg_state money_with_currency, money money_with_currency);
+DROP FUNCTION IF EXISTS unit_state_function(agg_state cldr_unit, unit cldr_unit);

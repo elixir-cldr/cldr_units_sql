@@ -1,13 +1,13 @@
 if Code.ensure_loaded?(Ecto) do
-  defmodule Mix.Tasks.Money.Gen.Postgres.AggregateFunctions do
+  defmodule Mix.Tasks.Units.Gen.Postgres.AggregateFunctions do
     use Mix.Task
 
     import Mix.Generator
     import Mix.Ecto, except: [migrations_path: 1]
     import Macro, only: [camelize: 1, underscore: 1]
-    import Money.Migration
+    import Cldr.Unit.Migration
 
-    @shortdoc "Generates a migration to create aggregate types for money_with_currency"
+    @shortdoc "Generates a migration to create aggregate types for cldr_unit"
 
     @moduledoc """
     Generates a migration to add a aggregation functions
@@ -21,9 +21,9 @@ if Code.ensure_loaded?(Ecto) do
     @dialyzer {:no_return, run: 1}
 
     def run(args) do
-      no_umbrella!("money.gen.postgres.aggregate_functions")
+      no_umbrella!("units.gen.postgres.aggregate_functions")
       repos = parse_repo(args)
-      name = "add_postgres_money_aggregate_functions"
+      name = "add_postgres_cldr_unit_aggregate_functions"
 
       Enum.each(repos, fn repo ->
         ensure_repo(repo, args)

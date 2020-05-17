@@ -1,15 +1,15 @@
-defmodule Money.Sql.Mixfile do
+defmodule Cldr.Units.Sql.Mixfile do
   use Mix.Project
 
-  @version "1.3.0"
+  @version "0.1.0"
 
   def project do
     [
-      app: :ex_money_sql,
+      app: :ex_cldr_units_sql,
       version: @version,
-      elixir: "~> 1.6",
-      name: "Money",
-      source_url: "https://github.com/kipcole9/money_sql",
+      elixir: "~> 1.8",
+      name: "Cldr Units SQL",
+      source_url: "https://github.com/elixir-cldr/cldr_units_sql",
       docs: docs(),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -36,9 +36,9 @@ defmodule Money.Sql.Mixfile do
       maintainers: ["Kip Cole"],
       licenses: ["Apache 2.0"],
       links: %{
-        "GitHub" => "https://github.com/kipcole9/money_sql",
-        "Readme" => "https://github.com/kipcole9/money_sql/blob/v#{@version}/README.md",
-        "Changelog" => "https://github.com/kipcole9/money_sql/blob/v#{@version}/CHANGELOG.md"
+        "GitHub" => "https://github.com/elixir-cldr/cldr_units_sql",
+        "Readme" => "https://github.com/elixir-cldr/cldr_units_sql/blob/v#{@version}/README.md",
+        "Changelog" => "https://github.com/elixir-cldr/cldr_units_sql/blob/v#{@version}/CHANGELOG.md"
       },
       files: [
         "lib",
@@ -76,28 +76,15 @@ defmodule Money.Sql.Mixfile do
 
   defp deps do
     [
-      {:ex_money, "~> 5.0"},
+      {:ex_cldr_units, "~> 3.0"},
       {:jason, "~> 1.0"},
-      {:dialyxir, "~> 1.0.0-rc", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, "~> 0.15"},
       {:benchee, "~> 1.0", optional: true, only: :dev},
       {:exprof, "~> 0.2", only: :dev, runtime: false},
-      ex_doc_version(System.version())
+      {:ex_doc, "~> 0.19", only: [:dev, :release]},
     ]
-  end
-
-  defp ex_doc_version(version) do
-    cond do
-      Version.compare(version, "1.7.0") in [:gt, :eq] ->
-        {:ex_doc, "~> 0.19", only: [:dev, :release]}
-
-      Version.compare(version, "1.6.0") == :lt ->
-        {:ex_doc, ">= 0.17.0 and < 0.18.0", only: [:dev, :release]}
-
-      Version.compare(version, "1.7.0") == :lt ->
-        {:ex_doc, ">= 0.18.0 and < 0.19.0", only: [:dev, :release]}
-    end
   end
 
   defp elixirc_paths(:test), do: ["lib", "test", "test/support"]

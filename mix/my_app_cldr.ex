@@ -1,8 +1,8 @@
-defmodule Money.Cldr do
+defmodule MyApp.Cldr do
   @moduledoc false
 
   use Cldr,
     locales: ["en", "de", "it", "es", "fr"],
     default_locale: "en",
-    providers: [Cldr.Number]
+    providers: [Cldr.Number, Cldr.Unit]
 end

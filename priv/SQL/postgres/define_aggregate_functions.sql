@@ -1,37 +1,37 @@
-CREATE OR REPLACE FUNCTION money_state_function(agg_state money_with_currency, money money_with_currency)
-RETURNS money_with_currency
+CREATE OR REPLACE FUNCTION unit_state_function(agg_state cldr_unit, unit cldr_unit)
+RETURNS cldr_unit
 IMMUTABLE
 STRICT
 LANGUAGE plpgsql
 AS $$
   DECLARE
-    expected_currency char(3);
+    expected_unit varchar;
     aggregate numeric;
     addition numeric;
   BEGIN
-    if currency_code(agg_state) IS NULL then
-      expected_currency := currency_code(money);
+    if unit_name(agg_state) IS NULL then
+      expected_unit := unit_name(unit);
       aggregate := 0;
     else
-      expected_currency := currency_code(agg_state);
-      aggregate := amount(agg_state);
+      expected_unit := unit_name(agg_state);
+      aggregate := unit_amount(agg_state);
     end if;
 
-    IF currency_code(money) = expected_currency THEN
-      addition := aggregate + amount(money);
-      return row(expected_currency, addition);
+    IF unit_name(unit) = expected_unit THEN
+      addition := aggregate + unit_amount(unit);
+      return row(expected_unit, addition);
     ELSE
       RAISE EXCEPTION
-        'Incompatible currency codes. Expected all currency codes to be %', expected_currency
-        USING HINT = 'Please ensure all columns have the same currency code',
+        'Incompatible units. Expected all unit names to be %', expected_unit
+        USING HINT = 'Please ensure all columns have the same unit name',
         ERRCODE = '22033';
     END IF;
   END;
 $$;
 
 
-CREATE AGGREGATE sum(money_with_currency)
+CREATE AGGREGATE sum(unit)
 (
-  sfunc = money_state_function,
-  stype = money_with_currency
+  sfunc = unit_state_function,
+  stype = cldr_unit
 );

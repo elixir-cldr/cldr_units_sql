@@ -1,13 +1,13 @@
 if Code.ensure_loaded?(Ecto) do
-  defmodule Mix.Tasks.Money.Gen.Postgres.MoneyWithCurrencyMigration do
+  defmodule Mix.Tasks.Units.Gen.Postgres.CldrUnitsMigration do
     use Mix.Task
 
     import Macro, only: [camelize: 1, underscore: 1]
     import Mix.Generator
     import Mix.Ecto, except: [migrations_path: 1]
-    import Money.Migration
+    import Cldr.Unit.Migration
 
-    @shortdoc "Generates a migration to create the :money_with_currency composite " <>
+    @shortdoc "Generates a migration to create the :cldr_unit composite " <>
                 "database type for Postgres"
 
     @moduledoc """
@@ -22,9 +22,9 @@ if Code.ensure_loaded?(Ecto) do
     @dialyzer {:no_return, run: 1}
 
     def run(args) do
-      no_umbrella!("money.gen.money_with_currency_migration")
+      no_umbrella!("units.gen.cldr_unit")
       repos = parse_repo(args)
-      name = "add_money_with_currency_type_to_postgres"
+      name = "add_cldr_unit_type_to_postgres"
 
       Enum.each(repos, fn repo ->
         ensure_repo(repo, args)
@@ -60,11 +60,11 @@ if Code.ensure_loaded?(Ecto) do
       use Ecto.Migration
 
       def up do
-        <%= Money.DDL.execute(Money.DDL.create_money_with_currency) %>
+        <%= Money.DDL.execute(Money.DDL.create_cldr_unit) %>
       end
 
       def down do
-        <%= Money.DDL.execute(Money.DDL.drop_money_with_currency) %>
+        <%= Money.DDL.execute(Money.DDL.drop_cldr_unit) %>
       end
     end
     """)

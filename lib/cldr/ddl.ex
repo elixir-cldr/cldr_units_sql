@@ -9,7 +9,7 @@ defmodule Money.DDL do
 
   @default_db :postgres
 
-  @supported_db_types :code.priv_dir(:ex_money_sql)
+  @supported_db_types :code.priv_dir(:ex_cldr_units_sql)
                       |> Path.join("SQL")
                       |> File.ls!()
                       |> Enum.map(&String.to_atom/1)
@@ -25,8 +25,8 @@ defmodule Money.DDL do
     is currently the only supported database type.
 
   """
-  def create_money_with_currency(db_type \\ @default_db) do
-    read_sql_file(db_type, "create_money_with_currency.sql")
+  def create_cldr_unit(db_type \\ @default_db) do
+    read_sql_file(db_type, "create_cldr_unit.sql")
   end
 
   @doc """
@@ -40,8 +40,8 @@ defmodule Money.DDL do
     is currently the only supported database type.
 
   """
-  def drop_money_with_currency(db_type \\ @default_db) do
-    read_sql_file(db_type, "drop_money_with_currency.sql")
+  def drop_cldr_unit(db_type \\ @default_db) do
+    read_sql_file(db_type, "drop_cldr_unit.sql")
   end
 
   @doc """
