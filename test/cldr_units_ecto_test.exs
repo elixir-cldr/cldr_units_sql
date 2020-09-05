@@ -3,37 +3,38 @@ defmodule Cldr.Unit.Ecto.Test do
 
   describe "Cldr.Unit.Ecto.Composite.Type specific tests" do
     test "load a tuple with an unknown unit produces an error" do
-      assert Cldr.Unit.Ecto.Composite.Type.load({"ABC", 100}) == :error
+      assert Cldr.Unit.Ecto.Composite.Type.load({"ABC", 100, "default"}) == :error
     end
 
     test "load a tuple produces a Cldr.Unit struct" do
-      assert Cldr.Unit.Ecto.Composite.Type.load({"meter", 100}) == {:ok, Cldr.Unit.new!(:meter, 100)}
+      assert Cldr.Unit.Ecto.Composite.Type.load({"meter", 100, "default"}) ==
+        {:ok, Cldr.Unit.new!(:meter, 100)}
     end
 
     test "dump a money struct" do
       assert Cldr.Unit.Ecto.Composite.Type.dump(Cldr.Unit.new!(:meter, 100)) ==
-               {:ok, {"meter", 100}}
+        {:ok, {"meter", 100, "default"}}
     end
   end
 
   describe "Cldr.Unit.Ecto.Map.Type specific tests" do
     test "load a json map with a string value produces a Cldr.Unit struct" do
-      assert Cldr.Unit.Ecto.Map.Type.load(%{"unit" => "meter", "value" => "100"}) ==
+      assert Cldr.Unit.Ecto.Map.Type.load(%{"unit" => "meter", "value" => "100", "usage" => "default"}) ==
                {:ok, Cldr.Unit.new!(:meter, Decimal.new(100))}
     end
 
     test "load a json map with a number value produces a Cldr.Unit struct" do
-      assert Cldr.Unit.Ecto.Map.Type.load(%{"unit" => "meter", "value" => 100}) ==
+      assert Cldr.Unit.Ecto.Map.Type.load(%{"unit" => "meter", "value" => 100, "usage" => "default"}) ==
                {:ok, Cldr.Unit.new!(:meter, 100)}
     end
 
     test "load a json map with an unknown unit code produces an error" do
-      assert Cldr.Unit.Ecto.Map.Type.load(%{"unit" => "AAA", "value" => 100}) == :error
+      assert Cldr.Unit.Ecto.Map.Type.load(%{"unit" => "AAA", "value" => 100, "usage" => "default"}) == :error
     end
 
     test "dump a money struct" do
       assert Cldr.Unit.Ecto.Map.Type.dump(Cldr.Unit.new!(:meter, 100)) ==
-               {:ok, %{"value" => "100", "unit" => "meter"}}
+               {:ok, %{"value" => "100", "unit" => "meter", "usage" => "default"}}
     end
   end
 

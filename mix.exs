@@ -1,7 +1,7 @@
 defmodule Cldr.Units.Sql.Mixfile do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
 
   def project do
     [
@@ -70,16 +70,18 @@ defmodule Cldr.Units.Sql.Mixfile do
 
   defp aliases do
     [
-     test: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate", "test"]
+     test: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end
 
   defp deps do
     [
-      {:ex_cldr_units, "~> 3.0"},
+      # {:ex_cldr_units, "~> 3.0"},
+      {:ex_cldr_units, path: "../cldr_units"},
       {:jason, "~> 1.0"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
-      {:ecto_sql, "~> 3.0"},
+      # {:ecto_sql, "~> 3.0"},
+      {:ecto_sql, "~> 3.5.0-rc"},
       {:postgrex, "~> 0.15"},
       {:benchee, "~> 1.0", optional: true, only: :dev},
       {:exprof, "~> 0.2", only: :dev, runtime: false},

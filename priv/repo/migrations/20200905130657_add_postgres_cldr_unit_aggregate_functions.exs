@@ -12,19 +12,22 @@ defmodule Cldr.Unit.SQL.Repo.Migrations.AddPostgresCldrUnitAggregateFunctions do
       DECLARE
         expected_unit varchar;
         aggregate numeric;
+        usage varchar;
         addition numeric;
       BEGIN
         if unit(agg_state) IS NULL then
           expected_unit := unit(unit);
           aggregate := 0;
+          usage := usage(unit);
         else
           expected_unit := unit(agg_state);
           aggregate := value(agg_state);
+          usage := usage(unit);
         end if;
 
         IF unit(unit) = expected_unit THEN
           addition := aggregate + value(unit);
-          return row(expected_unit, addition);
+          return row(expected_unit, addition, usage);
         ELSE
           RAISE EXCEPTION
             'Incompatible units. Expected all unit names to be %', expected_unit

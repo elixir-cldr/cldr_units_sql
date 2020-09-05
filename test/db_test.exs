@@ -49,6 +49,14 @@ defmodule Cldr.Unit.DB.Test do
     assert Cldr.Unit.compare(sum, Cldr.Unit.new!(:meter, Decimal.new(300))) == :eq
   end
 
+  test "inserting a unit with a usage" do
+    weight = Cldr.Unit.new!(:meter, 200, usage: :person)
+    {:ok, _} = Repo.insert(%Product{weight: weight})
+
+    result = select(Product, [o], o.weight) |> Repo.one
+    assert result.usage == :person
+  end
+
   test "filter on a currency type" do
     m = Cldr.Unit.new!(:meter, 100)
     m2 = Cldr.Unit.new!(:foot, 200)

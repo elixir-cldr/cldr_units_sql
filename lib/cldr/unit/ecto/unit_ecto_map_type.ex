@@ -28,6 +28,26 @@ if Code.ensure_loaded?(Ecto.Type) do
       :map
     end
 
+    # "New" values with usage
+    def load(%{"unit" => unit_name, "value" => value, "usage" => usage}) when is_binary(value) do
+      with {:ok, value} <- Decimal.parse(value),
+           {:ok, unit} <- Cldr.Unit.new(unit_name, value, usage: usage) do
+        {:ok, unit}
+      else
+        _ -> :error
+      end
+    end
+
+    # "New" values with usage
+    def load(%{"unit" => unit_name, "value" => value, "usage" => usage}) when is_integer(value) do
+      with {:ok, unit} <- Cldr.Unit.new(unit_name, value, usage: usage) do
+        {:ok, unit}
+      else
+        _ -> :error
+      end
+    end
+
+    # "Old" values
     def load(%{"unit" => unit_name, "value" => value}) when is_binary(value) do
       with {:ok, value} <- Decimal.parse(value),
            {:ok, unit} <- Cldr.Unit.new(unit_name, value) do
@@ -37,6 +57,7 @@ if Code.ensure_loaded?(Ecto.Type) do
       end
     end
 
+    # "Old" values
     def load(%{"unit" => unit_name, "value" => value}) when is_integer(value) do
       with {:ok, unit} <- Cldr.Unit.new(unit_name, value) do
         {:ok, unit}
@@ -45,8 +66,9 @@ if Code.ensure_loaded?(Ecto.Type) do
       end
     end
 
-    def dump(%Cldr.Unit{unit: unit_name, value: value}) do
-      {:ok, %{"unit" => to_string(unit_name), "value" => to_string(value)}}
+    def dump(%Cldr.Unit{unit: unit_name, value: value, usage: usage}) do
+      {:ok,
+        %{"unit" => to_string(unit_name), "value" => to_string(value), "usage" => to_string(usage)}}
     end
 
     def dump(_) do

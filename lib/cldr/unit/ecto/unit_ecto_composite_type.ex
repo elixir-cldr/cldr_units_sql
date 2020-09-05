@@ -18,9 +18,18 @@ if Code.ensure_loaded?(Ecto.Type) do
       false
     end
 
-    # When loading from the database
-    def load({unit_name, unit_value}) do
+    # "Old" type that has no usage defined
+    def load({unit_name, unit_value, nil}) do
       with {:ok, unit} <- Cldr.Unit.new(unit_name, unit_value) do
+        {:ok, unit}
+      else
+        _ -> :error
+      end
+    end
+
+    # "New" tuple with usage defined
+    def load({unit_name, unit_value, unit_usage}) do
+      with {:ok, unit} <- Cldr.Unit.new(unit_name, unit_value, usage: unit_usage) do
         {:ok, unit}
       else
         _ -> :error
@@ -32,11 +41,11 @@ if Code.ensure_loaded?(Ecto.Type) do
     # data is ok
     def dump(%Cldr.Unit{value: %Ratio{} = value} = unit) do
       value = Decimal.div(Decimal.new(value.numerator), Decimal.new(value.denominator))
-      {:ok, {to_string(unit.unit), value}}
+      {:ok, {to_string(unit.unit), value, unit.usage}}
     end
 
     def dump(%Cldr.Unit{} = unit) do
-      {:ok, {to_string(unit.unit), unit.value}}
+      {:ok, {to_string(unit.unit), unit.value, to_string(unit.usage)}}
     end
 
     def dump(_) do
