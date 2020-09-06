@@ -11,7 +11,7 @@
 
 ## Serializing to a Postgres database with Ecto
 
-`ex_cldr_units_sql` provides custom Ecto data types and a custom Postgres data type to provide serialization of `Cldr.Unit.t` types without losing precision whilst also maintaining the integrity of the `{unit, value}` relationship.  To serialise and retrieve unit types from a database the following steps should be followed:
+`ex_cldr_units_sql` provides custom Ecto data types and two custom Postgres data types to provide serialization of `Cldr.Unit.t` types without losing precision whilst also maintaining the integrity of the `{unit, value}` relationship.  To serialise and retrieve unit types from a database the following steps should be followed:
 
 1. First generate the migration to create the custom type:
 
@@ -29,7 +29,9 @@ mix ecto.migrate
 
 21:01:29.529 [info]  execute "CREATE TYPE public.cldr_unit AS (unit varchar, value numeric);"
 
-21:01:29.532 [info]  == Migrated 20200517121207 in 0.0s
+21:01:29.532 [info]  execute "CREATE TYPE public.cldr_unit_with_usage AS (unit varchar, value numeric, usage varchar);"
+
+21:01:29.546 [info]  == Migrated 20200517121207 in 0.0s
 ```
 
 3. Create your database migration with the new type (don't forget to `mix ecto.migrate` as well):
@@ -41,6 +43,7 @@ defmodule Cldr.Unit.Repo.Migrations.CreateProduct do
   def change do
     create table(:products) do
       add :weight, :cldr_unit
+      add :length, :cldr_unit_with_usage
       timestamps()
     end
   end
@@ -55,6 +58,7 @@ defmodule Product do
 
   schema "products" do
     field :weight, Cldr.Unit.Ecto.Composite.Type
+    field :length, Cldr.UnitWithUsage.Ecto.Composite.Type
 
     timestamps()
   end
@@ -91,6 +95,7 @@ Since MySQL does not support composite types, the `:map` type is used which in M
       def change do
         create table(:products) do
           add :weight_map, :map
+          add :length_map, :map
           timestamps()
         end
       end
@@ -103,6 +108,7 @@ Create your schema using the `Cldr.Unit.Ecto.Map.Type` ecto type:
 
       schema "products" do
         field :weight_map, Cldr.Unit.Ecto.Map.Type
+        field :length_map, Cldr.UnitWithUsage.Ecto.Map.Type
 
         timestamps()
       end
@@ -209,7 +215,7 @@ Since `:cldr_unit` is a composite type, the default `order_by` results may surpr
 ```elixir
 def deps do
   [
-    {:ex_cldr_units_sql, "~> 0.1.0"},
+    {:ex_cldr_units_sql, "~> 0.2.0"},
     ...
   ]
 end

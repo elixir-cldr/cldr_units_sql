@@ -60,11 +60,11 @@ if Code.ensure_loaded?(Ecto) do
       use Ecto.Migration
 
       def up do
-        <%= Cldr.Unit.DDL.execute(Cldr.Unit.DDL.create_cldr_unit) %>
+        <%= Cldr.Unit.DDL.execute_each(Cldr.Unit.DDL.create_cldr_unit) %>
       end
 
       def down do
-        <%= Cldr.Unit.DDL.execute(Cldr.Unit.DDL.drop_cldr_unit) %>
+        <%= Cldr.Unit.DDL.execute_each(Cldr.Unit.DDL.drop_cldr_unit) %>
       end
     end
     """)

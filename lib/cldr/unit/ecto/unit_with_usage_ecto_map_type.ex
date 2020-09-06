@@ -1,5 +1,5 @@
 if Code.ensure_loaded?(Ecto.Type) do
-  defmodule Cldr.Unit.Ecto.Map.Type do
+  defmodule Cldr.UnitWithUsage.Ecto.Map.Type do
     @moduledoc """
     Implements Ecto.Type behaviour for `Cldr.Unit`, where the underlying schema type
     is a map.
@@ -66,9 +66,9 @@ if Code.ensure_loaded?(Ecto.Type) do
       end
     end
 
-    def dump(%Cldr.Unit{unit: unit_name, value: value}) do
+    def dump(%Cldr.Unit{unit: unit_name, value: value, usage: usage}) do
       {:ok,
-        %{"unit" => to_string(unit_name), "value" => to_string(value)}}
+        %{"unit" => to_string(unit_name), "value" => to_string(value), "usage" => to_string(usage)}}
     end
 
     def dump(_) do
