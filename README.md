@@ -1,5 +1,5 @@
 # Introduction to Cldr Units SQL
-![Build Status](http://sweatbox.noexpectations.com.au:8080/buildStatus/icon?job=cldr_units_sql_)
+![Build Status](http://sweatbox.noexpectations.com.au:8080/buildStatus/icon?job=cldr_units_sql)
 [![Hex pm](http://img.shields.io/hexpm/v/ex_cldr_units_sql.svg?style=flat)](https://hex.pm/packages/ex_cldr_units_sql)
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://github.com/elixir-cldr/cldr_units_sql/blob/master/LICENSE)
 
