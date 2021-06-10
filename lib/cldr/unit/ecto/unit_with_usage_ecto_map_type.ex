@@ -30,7 +30,7 @@ if Code.ensure_loaded?(Ecto.Type) do
 
     # "New" values with usage
     def load(%{"unit" => unit_name, "value" => value, "usage" => usage}) when is_binary(value) do
-      with {:ok, value} <- Decimal.parse(value),
+      with {value, ""} <- Cldr.Decimal.parse(value),
            {:ok, unit} <- Cldr.Unit.new(unit_name, value, usage: usage) do
         {:ok, unit}
       else
@@ -49,7 +49,7 @@ if Code.ensure_loaded?(Ecto.Type) do
 
     # "Old" values
     def load(%{"unit" => unit_name, "value" => value}) when is_binary(value) do
-      with {:ok, value} <- Decimal.parse(value),
+      with {value, ""} <- Cldr.Decimal.parse(value),
            {:ok, unit} <- Cldr.Unit.new(unit_name, value) do
         {:ok, unit}
       else

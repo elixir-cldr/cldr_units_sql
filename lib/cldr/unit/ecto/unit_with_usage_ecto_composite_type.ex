@@ -71,7 +71,7 @@ if Code.ensure_loaded?(Ecto.Type) do
 
     def cast(%{"unit" => unit_name, "value" => value, "usage" => usage})
         when (is_binary(unit_name) or is_atom(unit_name)) and is_binary(value) do
-      with {:ok, value} <- Decimal.parse(value),
+      with {value, ""} <- Cldr.Decimal.parse(value),
            {:ok, unit} <- Cldr.Unit.new(unit_name, value, usage: usage) do
         {:ok, unit}
       else
