@@ -172,7 +172,7 @@ Since the datatype used to store `Cldr.Unit` in Postgres is a composite type (ca
   #Ecto.Query<from p in Product select: type(sum(p.weight), p.weight)>
   iex> Repo.all q
   [debug] QUERY OK source="products" db=6.1ms
-  SELECT sum(p0."weight")::cldr_type FROM "products" AS l0 []
+  SELECT sum(p0."weight")::cldr_unit_with_usage FROM "products" AS l0 []
   [#Cldr.Unit<:meter, 600>]
 ```
 
@@ -187,7 +187,7 @@ The function `Repo.aggregate/3` can also be used. However at least [ecto version
 ```elixir
   iex> Repo.all q
   [debug] QUERY ERROR source="products" db=4.5ms
-  SELECT sum(p0."weight")::cldr_unit FROM "products" AS p0 []
+  SELECT sum(p0."weight")::cldr_unit_with_usage FROM "products" AS p0 []
   ** (Postgrex.Error) ERROR 22033 (): Incompatible units. Expected all units to be :kilogram
 ```
 
