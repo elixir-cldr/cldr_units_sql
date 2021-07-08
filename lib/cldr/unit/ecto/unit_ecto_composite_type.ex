@@ -43,6 +43,8 @@ if Code.ensure_loaded?(Ecto.Type) do
     end
 
     # Casting in changesets
+    @dialyzer {:nowarn_function, {:cast, 1}}
+
     def cast(%Cldr.Unit{} = unit) do
       {:ok, unit}
     end
@@ -57,6 +59,7 @@ if Code.ensure_loaded?(Ecto.Type) do
            {:ok, unit} <- Cldr.Unit.new(unit_name, decimal_value) do
         {:ok, unit}
       else
+        :error -> {:error, message: "Couldn't cast value #{inspect value}"}
         {:error, {_, message}} -> {:error, message: message}
       end
     end
@@ -78,6 +81,7 @@ if Code.ensure_loaded?(Ecto.Type) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
+        :error -> {:error, message: "Couldn't cast value #{inspect value}"}
       end
     end
 

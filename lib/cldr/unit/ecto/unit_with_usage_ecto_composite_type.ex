@@ -51,6 +51,8 @@ if Code.ensure_loaded?(Ecto.Type) do
     end
 
     # Casting in changesets
+    @dialyzer {:nowarn_function, {:cast, 1}}
+
     def cast(%Cldr.Unit{} = unit) do
       {:ok, unit}
     end
@@ -66,6 +68,7 @@ if Code.ensure_loaded?(Ecto.Type) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
+        :error -> {:error, message: "Couldn't cast value #{inspect value}"}
       end
     end
 
@@ -99,6 +102,14 @@ if Code.ensure_loaded?(Ecto.Type) do
 
     # New for ecto_sql 3.2
     def embed_as(_), do: :self
+
+    def equal?(%Cldr.Unit{} = term1, %Cldr.Unit{} = term2) do
+      case Cldr.Unit.compare(term1, term2) do
+        :eq -> true
+        _ -> false
+      end
+    end
+
     def equal?(term1, term2), do: term1 == term2
   end
 end
