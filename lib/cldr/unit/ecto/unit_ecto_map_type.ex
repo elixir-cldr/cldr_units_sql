@@ -12,8 +12,10 @@ if Code.ensure_loaded?(Ecto.Type) do
 
     `Decimal.to_string/1` is not guaranteed to produce a string that will round-trip
     convert back to the identical number.  However given enough precision in the
-    `Decimal.get_context/0` then round trip conversion should be expected.  The default
-    precision in the context is 28 digits.
+    [Decimal context](https://hexdocs.pm/decimal/Decimal.Context.html#content) then
+    round trip conversion should be expected.  The default precision in the context
+    is 28 digits.
+
     """
 
     @behaviour Ecto.Type
