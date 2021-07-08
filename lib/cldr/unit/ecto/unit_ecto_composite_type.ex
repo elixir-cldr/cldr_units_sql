@@ -68,7 +68,7 @@ if Code.ensure_loaded?(Ecto.Type) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
-        :error -> {:error, message: "Couldn't parse value #{inspect value}"}
+        :error -> {:error, message: "Couldn't parse value #{inspect(value)}"}
       end
     end
 
@@ -91,6 +91,14 @@ if Code.ensure_loaded?(Ecto.Type) do
 
     # New for ecto_sql 3.2
     def embed_as(_), do: :self
+
+    def equal?(%Cldr.Unit{} = term1, %Cldr.Unit{} = term2) do
+      case Cldr.Unit.compare(term1, term2) do
+        :eq -> true
+        _ -> false
+      end
+    end
+
     def equal?(term1, term2), do: term1 == term2
   end
 end
