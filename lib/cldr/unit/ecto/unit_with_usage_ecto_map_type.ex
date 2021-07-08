@@ -20,11 +20,11 @@ if Code.ensure_loaded?(Ecto.Type) do
 
     @behaviour Ecto.Type
 
-    defdelegate cast(money), to: Cldr.Unit.Ecto.Composite.Type
+    defdelegate cast(unit), to: Cldr.Unit.Ecto.Composite.Type
 
     # New for ecto_sql 3.2
-    defdelegate  embed_as(term), to: Cldr.Unit.Ecto.Composite.Type
-    defdelegate  equal?(term1, term2), to: Cldr.Unit.Ecto.Composite.Type
+    defdelegate embed_as(term), to: Cldr.Unit.Ecto.Composite.Type
+    defdelegate equal?(term1, term2), to: Cldr.Unit.Ecto.Composite.Type
 
     def type() do
       :map
@@ -70,12 +70,11 @@ if Code.ensure_loaded?(Ecto.Type) do
 
     def dump(%Cldr.Unit{unit: unit_name, value: value, usage: usage}) do
       {:ok,
-        %{"unit" => to_string(unit_name), "value" => to_string(value), "usage" => to_string(usage)}}
+       %{"unit" => to_string(unit_name), "value" => to_string(value), "usage" => to_string(usage)}}
     end
 
     def dump(_) do
       :error
     end
-
   end
 end
