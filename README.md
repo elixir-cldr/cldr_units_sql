@@ -183,7 +183,7 @@ The function `Repo.aggregate/3` can also be used. However at least [ecto version
   #Cldr.Unit<:kilogram, 100>
 ```
 
-**Note** that to preserve the integrity of `Cldr.Unit` it is not permissable to aggregate units that has different unit types.  If you attempt to aggregate unit with different unit types the query will abort and an exception will be raised:
+**Note** that to preserve the integrity of `Cldr.Unit` it is not permissible to aggregate units that has different unit types.  If you attempt to aggregate unit with different unit types the query will abort and an exception will be raised:
 ```elixir
   iex> Repo.all q
   [debug] QUERY ERROR source="products" db=4.5ms
