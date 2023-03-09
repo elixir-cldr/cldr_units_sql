@@ -18,8 +18,8 @@ if Code.ensure_loaded?(Ecto.Type) do
       false
     end
 
-    def load(%{unit_name, unit_value}) do
-      with {:ok, unit} <- Cldr.Unit.new(unit_name, unit_value) do
+    def load(%{unit: unit, value: value}) do
+      with {:ok, unit} <- Cldr.Unit.new(unit, value) do
         {:ok, unit}
       else
         _ -> :error
@@ -55,7 +55,7 @@ if Code.ensure_loaded?(Ecto.Type) do
            {:ok, unit} <- Cldr.Unit.new(unit_name, decimal_value) do
         {:ok, unit}
       else
-        :error -> {:error, message: "Couldn't cast value #{inspect value}"}
+        :error -> {:error, message: "Couldn't cast value #{inspect(value)}"}
         {:error, {_, message}} -> {:error, message: message}
       end
     end
@@ -77,7 +77,7 @@ if Code.ensure_loaded?(Ecto.Type) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
-        :error -> {:error, message: "Couldn't cast value #{inspect value}"}
+        :error -> {:error, message: "Couldn't cast value #{inspect(value)}"}
       end
     end
 
