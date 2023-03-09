@@ -67,7 +67,7 @@ if Code.ensure_loaded?(Ecto.Type) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
-        :error -> {:error, message: "Couldn't parse value #{inspect value}"}
+        :error -> {:error, message: "Couldn't parse value #{inspect(value)}"}
       end
     end
 
@@ -77,7 +77,7 @@ if Code.ensure_loaded?(Ecto.Type) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
-        :error -> {:error, message: "Couldn't cast value #{inspect value}"}
+        :error -> {:error, message: "Couldn't cast value #{inspect(value)}"}
       end
     end
 
