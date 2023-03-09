@@ -1,5 +1,5 @@
 if Code.ensure_loaded?(Ecto.Type) do
-  defmodule Cldr.UnitWithUsage.Ecto.Composite.Type do
+  defmodule Cldr.Unit.Ecto.Composite.Type do
     @moduledoc """
     Implements the Ecto.Type behaviour for a user-defined Postgres composite type
     called `:cldr_unit`.
@@ -11,23 +11,15 @@ if Code.ensure_loaded?(Ecto.Type) do
     @behaviour Ecto.Type
 
     def type do
-      :cldr_unit_with_usage
+      :cldr_unit
     end
 
     def blank?(_) do
       false
     end
 
-    def load({unit_name, unit_value, nil}) do
-      with {:ok, unit} <- Cldr.Unit.new(unit_name, unit_value) do
-        {:ok, unit}
-      else
-        _ -> :error
-      end
-    end
-
-    def load({unit_name, unit_value, unit_usage}) do
-      with {:ok, unit} <- Cldr.Unit.new(unit_name, unit_value, usage: unit_usage) do
+    def load(%{unit: unit, value: value}) do
+      with {:ok, unit} <- Cldr.Unit.new(unit, value) do
         {:ok, unit}
       else
         _ -> :error
@@ -56,39 +48,40 @@ if Code.ensure_loaded?(Ecto.Type) do
       {:ok, nil}
     end
 
-    def cast(%{"unit" => unit_name, "value" => value, "usage" => usage})
+    def cast(%{"unit" => unit_name, "value" => value})
         when (is_binary(unit_name) or is_atom(unit_name)) and is_number(value) do
       with decimal_value <- Decimal.new(value),
-           {:ok, unit} <- Cldr.Unit.new(unit_name, decimal_value, usage: usage) do
+           {:ok, unit} <- Cldr.Unit.new(unit_name, decimal_value) do
         {:ok, unit}
       else
+        :error -> {:error, message: "Couldn't cast value #{inspect(value)}"}
         {:error, {_, message}} -> {:error, message: message}
-        :error -> {:error, message: "Couldn't cast value #{inspect value}"}
       end
     end
 
-    def cast(%{"unit" => unit_name, "value" => value, "usage" => usage})
+    def cast(%{"unit" => unit_name, "value" => value})
         when (is_binary(unit_name) or is_atom(unit_name)) and is_binary(value) do
       with {value, ""} <- Cldr.Decimal.parse(value),
-           {:ok, unit} <- Cldr.Unit.new(unit_name, value, usage: usage) do
+           {:ok, unit} <- Cldr.Unit.new(unit_name, value) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
-        :error -> {:error, message: "Couldn't parse value #{inspect value}"}
+        :error -> {:error, message: "Couldn't parse value #{inspect(value)}"}
       end
     end
 
-    def cast(%{"unit" => unit_name, "value" => %Decimal{} = value, "usage" => usage})
+    def cast(%{"unit" => unit_name, "value" => %Decimal{} = value})
         when is_binary(unit_name) or is_atom(unit_name) do
-      with {:ok, unit} <- Cldr.Unit.new(unit_name, value, usage: usage) do
+      with {:ok, unit} <- Cldr.Unit.new(unit_name, value) do
         {:ok, unit}
       else
         {:error, {_, message}} -> {:error, message: message}
+        :error -> {:error, message: "Couldn't cast value #{inspect(value)}"}
       end
     end
 
-    def cast(%{unit: unit_name, value: value} = unit) do
-      cast(%{"unit" => unit_name, "value" => value, "usage" => unit.usage})
+    def cast(%{unit: unit_name, value: value}) do
+      cast(%{"unit" => unit_name, "value" => value})
     end
 
     def cast(_money) do
