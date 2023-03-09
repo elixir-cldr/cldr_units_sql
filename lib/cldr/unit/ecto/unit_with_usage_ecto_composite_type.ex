@@ -43,7 +43,7 @@ if Code.ensure_loaded?(Ecto.Type) do
     end
 
     def dump(%Cldr.Unit{} = unit) do
-      {:ok, {to_string(unit.unit), unit.value, to_string(unit.usage)}}
+      {:ok, unit}
     end
 
     def dump(_) do
