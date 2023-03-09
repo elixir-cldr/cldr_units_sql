@@ -18,7 +18,7 @@ if Code.ensure_loaded?(Ecto.Type) do
       false
     end
 
-    def load({unit_name, unit_value}) do
+    def load(%{unit_name, unit_value}) do
       with {:ok, unit} <- Cldr.Unit.new(unit_name, unit_value) do
         {:ok, unit}
       else
