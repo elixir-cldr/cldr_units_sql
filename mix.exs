@@ -7,7 +7,7 @@ defmodule Cldr.Units.Sql.Mixfile do
     [
       app: :ex_cldr_units_sql,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.11",
       name: "Cldr Units SQL",
       source_url: "https://github.com/elixir-cldr/cldr_units_sql",
       docs: docs(),

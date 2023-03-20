@@ -1,5 +1,6 @@
 ExUnit.start()
-{:ok, _pid} = Cldr.Unit.SQL.Repo.start_link
+
+{:ok, pid} = Cldr.Unit.SQL.Repo.start_link
 :ok = Ecto.Adapters.SQL.Sandbox.mode(Cldr.Unit.SQL.Repo, :manual)
 
 defmodule Cldr.Unit.SQL.RepoCase do

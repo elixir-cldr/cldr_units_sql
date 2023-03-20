@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :ex_cldr_units_sql, Cldr.Unit.SQL.Repo,
     username: "kip",
