@@ -1,7 +1,7 @@
 defmodule Cldr.Units.Sql.Mixfile do
   use Mix.Project
 
-  @version "0.3.1"
+  @version "0.3.2"
 
   def project do
     [
@@ -81,9 +81,9 @@ defmodule Cldr.Units.Sql.Mixfile do
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, "~> 0.15"},
-      {:benchee, "~> 1.0", optional: true, only: :dev},
+      {:benchee, "~> 1.0", optional: true, only: :dev, runtime: false},
       {:exprof, "~> 0.2", only: :dev, runtime: false},
-      {:ex_doc, "~> 0.21", only: [:dev, :release]},
+      {:ex_doc, "~> 0.21", only: [:dev, :release], runtime: false},
     ]
   end
 

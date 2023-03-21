@@ -7,7 +7,11 @@
 
 ## Prerequisities
 
-* `ex_cldr_units_sql` is supported on Elixir 1.6 and later only
+* `ex_cldr_units_sql` is supported on Elixir 1.11 and later only.
+
+> #### Make sure the Ecto type and the database type match! {: .warning}
+>
+> It's important the Ecto type like `Cldr.Unit.Ecto.Composite.Type` is matched with the correct database migration type `:cldr_unit` or `:cldr_unit_with_usage`.  Similarly `Cldr.Unit.Ecto.Map.Type` must be matched with the database migration type `map()`.
 
 ## Serializing to a Postgres database with Ecto
 

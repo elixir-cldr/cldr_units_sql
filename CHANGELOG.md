@@ -1,5 +1,13 @@
 # Changelog
 
+##  Cldr Units SQL v0.3.2
+
+This is the changelog for Cldr Units SQL v0.3.1 released on March 21st, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_units_sql/tags)
+
+### Bug Fixes
+
+* Improves README to make clearer the importance of aligning the right Ecto type with the right database type.
+
 ##  Cldr Units SQL v0.3.1
 
 This is the changelog for Cldr Units SQL v0.3.1 released on July 9th, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_units_sql/tags)
