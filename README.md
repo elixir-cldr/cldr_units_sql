@@ -88,55 +88,59 @@ SELECT p0."amount", p0."inserted_at", p0."updated_at" FROM "products" AS p0 []
 ## Serializing to a MySQL (or other non-Postgres) database with Ecto
 
 Since MySQL does not support composite types, the `:map` type is used which in MySQL is implemented as a `JSON` column.  The currency code and amount are serialised into this column.
+```elixir
+defmodule Cldr.Unit.Repo.Migrations.CreateProduct do
+  use Ecto.Migration
 
-    defmodule Cldr.Unit.Repo.Migrations.CreateProduct do
-      use Ecto.Migration
-
-      def change do
-        create table(:products) do
-          add :weight_map, :map
-          add :length_map, :map
-          timestamps()
-        end
-      end
+  def change do
+    create table(:products) do
+      add :weight_map, :map
+      add :length_map, :map
+      timestamps()
     end
+  end
+end
+```
 
 Create your schema using the `Cldr.Unit.Ecto.Map.Type` ecto type:
+```elixir
+defmodule Product do
+  use Ecto.Schema
 
-    defmodule Product do
-      use Ecto.Schema
+  schema "products" do
+    field :weight_map, Cldr.Unit.Ecto.Map.Type
+    field :length_map, Cldr.UnitWithUsage.Ecto.Map.Type
 
-      schema "products" do
-        field :weight_map, Cldr.Unit.Ecto.Map.Type
-        field :length_map, Cldr.UnitWithUsage.Ecto.Map.Type
-
-        timestamps()
-      end
-    end
+    timestamps()
+  end
+end
+```
 
 Insert into the database:
+```elixir
+iex> Repo.insert %Product{weight_map: Cldr.Unit.new!(:kilogram, 100)}
+[debug] QUERY OK db=25.8ms
+INSERT INTO "products" ("weight_map","inserted_at","updated_at") VALUES ($1,$2,$3)
+RETURNING "id" [%{value: "100", unit: "kilogram"},
+{{2017, 2, 21}, {0, 15, 40, 979576}}, {{2017, 2, 21}, {0, 15, 40, 991391}}]
 
-    iex> Repo.insert %Product{weight_map: Cldr.Unit.new!(:kilogram, 100)}
-    [debug] QUERY OK db=25.8ms
-    INSERT INTO "products" ("weight_map","inserted_at","updated_at") VALUES ($1,$2,$3)
-    RETURNING "id" [%{value: "100", unit: "kilogram"},
-    {{2017, 2, 21}, {0, 15, 40, 979576}}, {{2017, 2, 21}, {0, 15, 40, 991391}}]
-
-    {:ok,
-     %Product{__meta__: #Ecto.Schema.Metadata<:loaded, "products">,
-      amount: nil, weight_map: #Cldr.Unit<:kilogram, 100>, id: 3,
-      inserted_at: ~N[2017-02-21 00:15:40.979576],
-      updated_at: ~N[2017-02-21 00:15:40.991391]}}
+{:ok,
+ %Product{__meta__: #Ecto.Schema.Metadata<:loaded, "products">,
+  amount: nil, weight_map: #Cldr.Unit<:kilogram, 100>, id: 3,
+  inserted_at: ~N[2017-02-21 00:15:40.979576],
+  updated_at: ~N[2017-02-21 00:15:40.991391]}}
+```
 
 Retrieve from the database:
-
-    iex> Repo.all Product
-    [debug] QUERY OK source="products" db=16.1ms decode=0.1ms
-    SELECT t0."id", t0."weight_map", t0."inserted_at", t0."updated_at" FROM "products" AS t0 []
-    [%Ledger{__meta__: #Ecto.Schema.Metadata<:loaded, "products">,
-      weight_map: #Cldr.Unit<:kilogram, 100>, id: 3,
-      inserted_at: ~N[2017-02-21 00:15:40.979576],
-      updated_at: ~N[2017-02-21 00:15:40.991391]}]
+```elixir
+iex> Repo.all Product
+[debug] QUERY OK source="products" db=16.1ms decode=0.1ms
+SELECT t0."id", t0."weight_map", t0."inserted_at", t0."updated_at" FROM "products" AS t0 []
+[%Ledger{__meta__: #Ecto.Schema.Metadata<:loaded, "products">,
+  weight_map: #Cldr.Unit<:kilogram, 100>, id: 3,
+  inserted_at: ~N[2017-02-21 00:15:40.979576],
+  updated_at: ~N[2017-02-21 00:15:40.991391]}]
+```
 
 ### Notes:
 
@@ -215,7 +219,7 @@ Since `:cldr_unit` is a composite type, the default `order_by` results may surpr
 ```elixir
 def deps do
   [
-    {:ex_cldr_units_sql, "~> 0.2.0"},
+    {:ex_cldr_units_sql, "~> 0.3"},
     ...
   ]
 end
