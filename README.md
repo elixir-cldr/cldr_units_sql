@@ -11,7 +11,7 @@
 
 > #### Make sure the Ecto type and the database type match! {: .warning}
 >
-> It's important that the Ecto type `Cldr.Unit.Ecto.Composite.Type` is matched with the correct database type in the migration: `:cldr_unit` or `:cldr_unit_with_usage`.  Similarly `Cldr.Unit.Ecto.Map.Type` must be matched with the database type `map()` in the migration.
+> It's important that the Ecto type `Cldr.Unit.Ecto.Composite.Type` is matched with the correct database type in the migration: `:cldr_unit` or `:cldr_unit_with_usage`.  Similarly `Cldr.Unit.Ecto.Map.Type` must be matched with the database type `:map` in the migration.
 
 ## Serializing to a Postgres database with Ecto
 
