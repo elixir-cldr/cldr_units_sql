@@ -1,5 +1,13 @@
 # Changelog
 
+##  Cldr Units SQL v1.0.0
+
+This is the changelog for Cldr Units SQL v1.0.0 released on ______, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_units_sql/tags)
+
+### Enhancements
+
+* Removes requirement and support for Ratio-based units in line with [ex_cldr_units](htttps://github.com/elixir-cldr/cldr_units).
+
 ##  Cldr Units SQL v0.3.1
 
 This is the changelog for Cldr Units SQL v0.3.1 released on July 9th, 2021.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_units_sql/tags)

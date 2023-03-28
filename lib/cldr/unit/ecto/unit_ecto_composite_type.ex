@@ -26,14 +26,6 @@ if Code.ensure_loaded?(Ecto.Type) do
       end
     end
 
-    # Dumping to the database.  We make the assumption that
-    # since we are dumping from %Cldr.Unit{} structs that the
-    # data is ok
-    def dump(%Cldr.Unit{value: %Ratio{} = value} = unit) do
-      value = Decimal.div(Decimal.new(value.numerator), Decimal.new(value.denominator))
-      {:ok, {to_string(unit.unit), value}}
-    end
-
     def dump(%Cldr.Unit{} = unit) do
       {:ok, {to_string(unit.unit), unit.value}}
     end
