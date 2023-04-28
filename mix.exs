@@ -76,7 +76,7 @@ defmodule Cldr.Units.Sql.Mixfile do
 
   defp deps do
     [
-      {:ex_cldr_units, "~> 3.2"},
+      {:ex_cldr_units, "~> 3.16"},
       {:jason, "~> 1.0"},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:ecto_sql, "~> 3.0"},
