@@ -223,7 +223,7 @@ Since `:cldr_unit` is a composite type, the default `order_by` results may surpr
 ```elixir
 def deps do
   [
-    {:ex_cldr_units_sql, "~> 0.3"},
+    {:ex_cldr_units_sql, "~> 1.0"},
     ...
   ]
 end
