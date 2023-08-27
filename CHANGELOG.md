@@ -1,5 +1,13 @@
 # Changelog
 
+##  Cldr Units SQL v1.0.1
+
+This is the changelog for Cldr Units SQL v1.0.1 released on August 28th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_units_sql/tags)
+
+### Bug Fixes
+
+* Fix the project description which is returned by `mix hex.info ex_cldr_units_sql`. Thanks to @petrus-jvrensburg for the report. Closes #5.
+
 ##  Cldr Units SQL v1.0.0
 
 This is the changelog for Cldr Units SQL v1.0.0 released on April 28th, 2023.  For older changelogs please consult the release tag on [GitHub](https://github.com/elixir-cldr/cldr_units_sql/tags)
