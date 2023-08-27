@@ -28,13 +28,13 @@ defmodule Cldr.Units.Sql.Mixfile do
   end
 
   defp description do
-    "Money functions for the serialization a money data type."
+    "Unit functions for the serialization a Cldr.Unit.t data type."
   end
 
   defp package do
     [
       maintainers: ["Kip Cole"],
-      licenses: ["Apache 2.0"],
+      licenses: ["Apache-2.0"],
       links: %{
         "GitHub" => "https://github.com/elixir-cldr/cldr_units_sql",
         "Readme" => "https://github.com/elixir-cldr/cldr_units_sql/blob/v#{@version}/README.md",
