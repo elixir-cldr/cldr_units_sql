@@ -1,7 +1,7 @@
 defmodule Cldr.Units.Sql.Mixfile do
   use Mix.Project
 
-  @version "1.0.0"
+  @version "1.0.1"
 
   def project do
     [
@@ -28,7 +28,8 @@ defmodule Cldr.Units.Sql.Mixfile do
   end
 
   defp description do
-    "Unit functions for the serialization a Cldr.Unit.t data type."
+    "Unit functions for the serialization to a database of a Cldr.Unit.t data type.
+    Also includes aggregation and sum functions."
   end
 
   defp package do
